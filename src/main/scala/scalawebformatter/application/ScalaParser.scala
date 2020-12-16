@@ -4,15 +4,15 @@ import scalawebformatter.domain.model.{ScalaCaseClass, ScalaObject, ScalaValue}
 
 import scala.util.parsing.combinator._
 
-class ScalaToStringParser(nestLevel: Int) {
+class ScalaParser(nestLevel: Int) {
   def parse(input: String): Either[String, ScalaObject] =
-    ScalaToStringParser.parse(ScalaToStringParser.nestedCaseClass(nestLevel), input) match {
-      case ScalaToStringParser.Success(v, _) => Right(v)
-      case ScalaToStringParser.Failure(msg, _) => Left(msg)
+    ScalaParser.parse(ScalaParser.nestedCaseClass(nestLevel), input) match {
+      case ScalaParser.Success(v, _) => Right(v)
+      case ScalaParser.Failure(msg, _) => Left(msg)
     }
 }
 
-private object ScalaToStringParser extends RegexParsers {
+private object ScalaParser extends RegexParsers {
 
   def value: Parser[ScalaValue] =
     "[^(),]".r.* ^^ (ss => ScalaValue(ss.mkString))

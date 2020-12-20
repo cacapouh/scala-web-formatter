@@ -62,12 +62,10 @@ class ScalaFormatterTest extends Specification with Mockito {
       )
 
       scalaFormatter.format(formattedStructure, conf) === FormattedString(
-        """
-          |Hoge(
+        """Hoge(
           |  aaa,
           |  bbb
-          |)
-          |""".stripMargin
+          |)""".stripMargin
       )
     }
   }

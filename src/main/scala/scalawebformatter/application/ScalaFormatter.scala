@@ -28,16 +28,16 @@ class ScalaFormatter {
 
   def format(formattedStructure: FormattedStructure, formatConfig: FormatConfig): FormattedString = formattedStructure match {
     case OneLine(v) => FormattedString(v)
-    case NewLine(className, values) =>
-      val indent = List.fill(formatConfig.indentWidth)(" ").mkString
-      val vs = values.map(format(_, formatConfig).value).map(indent + _).mkString(",\n")
+    case NewLine(className, structures) =>
+      def formatLines(lines: Seq[String]): String = lines.map(formatConfig.indent + _).mkString("\n")
+
+      val lines = structures.map(format(_, formatConfig.nestIndent).value).mkString(",\n")
+      val formatResult = formatLines(lines.linesIterator.toSeq)
 
       FormattedString {
-        s"""
-           |$className(
-           |$vs
-           |)
-           |""".stripMargin
+        s"""$className(
+           |$formatResult
+           |)""".stripMargin
       }
   }
 }

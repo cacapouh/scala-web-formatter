@@ -17,11 +17,12 @@ class FormatRoute(formatService: FormatService)(implicit val cs: ContextShift[IO
   private val formatConfig = FormatConfig(maxLineWidth = 80, indentWidth = 2)
 
   def routes: HttpRoutes[IO] = HttpRoutes.of[IO] {
-    case req @ GET -> Root / "format" =>
+    case req @ POST -> Root / "format" =>
       for {
         scalaString <- req.as[ScalaString]
-        res <- Ok {
-          formatService.format(scalaString.value, formatConfig).asJson
+        res <- formatService.format(scalaString.value, formatConfig) match {
+          case Right(value) => Ok(value.value)
+          case Left(value) => BadRequest(value.value)
         }
       } yield res
   }

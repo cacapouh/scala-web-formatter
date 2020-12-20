@@ -2,8 +2,7 @@ package scalawebformatter.ui
 
 import cats.effect.{ExitCode, IO, IOApp}
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.implicits._
-import scalawebformatter.ui.route.ReadyRoute
+import scalawebformatter.di.UiModule
 
 import scala.concurrent.ExecutionContext.global
 
@@ -11,8 +10,7 @@ object WebServer extends IOApp {
   implicit val cs = IO.contextShift(global)
   override implicit val timer = IO.timer(global)
 
-  val readyRoute = new ReadyRoute().routes
-  val routes = (readyRoute).orNotFound
+  val routes = new UiModule().routes
 
   def run(args: List[String]): IO[ExitCode] =
     BlazeServerBuilder.apply[IO](global)
@@ -20,4 +18,5 @@ object WebServer extends IOApp {
       .withHttpApp(routes)
       .resource
       .use(_ => IO.never)
+      .as(ExitCode.Success)
 }

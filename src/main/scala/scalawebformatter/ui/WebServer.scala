@@ -17,9 +17,10 @@ object WebServer extends IOApp {
 
   def app: Resource[IO, Server] = for {
       blocker <- Blocker[IO]
-      routes = new UiModule()(implicitly[ContextShift[IO]], implicitly[Timer[IO]], blocker).routes
+      uiModule = new UiModule()(implicitly[ContextShift[IO]], implicitly[Timer[IO]], blocker)
+      routes = uiModule.routes
       server <- BlazeServerBuilder.apply[IO](global)
-        .bindHttp(8080, "localhost")
+        .bindHttp(uiModule.httpPort, uiModule.httpHost)
         .withHttpApp(routes)
         .resource
     } yield {

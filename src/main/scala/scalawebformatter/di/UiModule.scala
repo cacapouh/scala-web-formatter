@@ -19,4 +19,10 @@ class UiModule(implicit val cs: ContextShift[IO], timer: Timer[IO], blocker: Blo
   private val formatRoute = new FormatRoute(ApplicationModule.scalaFormatService).routes
   private val staticFileRoute = new StaticFileRoute()(cs, blocker)
   val routes = CORS(readyRoute <+> formatRoute <+> staticFileRoute.routes).orNotFound
+
+  val httpPort = {
+    val p = sys.env.getOrElse("PORT", throw new RuntimeException("Failed to find PORT"))
+    p.toInt
+  }
+  val httpHost = "localhost"
 }

@@ -4,6 +4,8 @@ version := "0.1"
 
 scalaVersion := "2.13.4"
 
+enablePlugins(JavaAppPackaging)
+
 val http4sVersion = "1.0.0-M9"
 lazy val root = (project in file(".")).settings(
   libraryDependencies ++= Seq(
